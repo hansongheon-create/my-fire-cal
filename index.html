@@ -3,116 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>허니고니 | FIRE 시뮬레이터 Pro</title>
+    <title>🍯 허니고니 FIRE 시뮬레이터 Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
-        :root {
-            --primary: #4f46e5;
-            --secondary: #ec4899;
-            --bg: #f8fafc;
-            --card: #ffffff;
+        :root { 
+            --primary: #3b82f6; 
+            --secondary: #10b981; 
+            --danger: #ef4444; 
+            --bg: #f8fafc; 
+            --card: #ffffff; 
+            --border: #e2e8f0; 
             --text-main: #1e293b;
             --text-sub: #64748b;
-            --border: #e2e8f0;
         }
-        body { font-family: 'Pretendard', sans-serif; background-color: var(--bg); color: var(--text-main); margin: 0; padding: 20px; }
-        .wrapper { max-width: 1000px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 40px; }
-        header h1 { font-size: 2.2rem; color: var(--primary); margin-bottom: 10px; }
         
-        .grid-layout { display: grid; grid-template-columns: 350px 1fr; gap: 25px; }
+        body { font-family: 'Pretendard', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.6; }
+        .wrapper { max-width: 1100px; margin: 0 auto; }
         
-        /* 입력창 스타일 */
-        .card { background: var(--card); border-radius: 20px; padding: 30px; border: 1px solid var(--border); shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .input-item { margin-bottom: 18px; }
-        label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
-        input { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 1rem; box-sizing: border-box; transition: 0.2s; }
-        input:focus { border-color: var(--primary); outline: none; background: #f5f3ff; }
-        
-        button { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:hover { background: #4338ca; transform: translateY(-2px); }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2rem; color: #1e3a8a; margin: 0; }
 
-        /* 결과 화면 스타일 */
-        .result-panel { display: none; }
-        .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 25px; }
-        .summary-card { background: #f1f5f9; padding: 20px; border-radius: 15px; text-align: center; }
-        .summary-card span { font-size: 0.85rem; color: var(--text-sub); display: block; margin-bottom: 5px; }
-        .summary-card strong { font-size: 1.4rem; color: var(--primary); }
-
-        .chart-container { background: white; padding: 20px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 25px; }
+        /* Layout */
+        .grid { display: grid; grid-template-columns: 360px 1fr; gap: 25px; }
+        .card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         
-        /* 테이블 스타일 */
-        .table-wrapper { overflow-x: auto; background: white; border-radius: 15px; border: 1px solid var(--border); }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th { background: #f8fafc; padding: 12px; text-align: right; border-bottom: 2px solid var(--border); color: var(--text-sub); }
+        /* Input UI: 단위 표시 개선 */
+        .input-group { position: relative; margin-bottom: 22px; }
+        .input-group label { 
+            position: absolute; left: 12px; top: -10px; 
+            background: white; padding: 0 5px; 
+            font-size: 0.75rem; font-weight: 700; color: var(--text-sub); 
+            z-index: 10;
+        }
+        .input-group input { 
+            width: 100%; 
+            padding: 14px 60px 14px 15px; /* 우측에 단위 공간(60px) 충분히 확보 */
+            border: 1.5px solid var(--border); 
+            border-radius: 12px; 
+            font-size: 1.1rem; 
+            text-align: left; /* 숫자는 왼쪽 정렬하여 단위와 명확히 분리 */
+            box-sizing: border-box; 
+            transition: border-color 0.2s;
+            color: var(--text-main);
+        }
+        .input-group input:focus { border-color: var(--primary); outline: none; background: #f0f9ff; }
+        
+        .unit { 
+            position: absolute; 
+            right: 15px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            font-size: 0.95rem; 
+            color: #94a3b8; 
+            font-weight: 500;
+            pointer-events: none; 
+        }
+
+        button { 
+            width: 100%; padding: 16px; 
+            background: var(--primary); color: white; 
+            border: none; border-radius: 12px; 
+            font-size: 1.1rem; font-weight: 700; 
+            cursor: pointer; transition: 0.2s; 
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+        button:hover { background: #2563eb; transform: translateY(-1px); }
+
+        /* Result Area */
+        .summary-header { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
+        .sum-item { text-align: center; padding: 15px; border-radius: 15px; background: white; border: 1px solid var(--border); }
+        .sum-item span { display: block; font-size: 0.85rem; color: var(--text-sub); margin-bottom: 5px; }
+        .sum-item strong { font-size: 1.3rem; color: var(--primary); }
+        .sum-item strong.danger { color: var(--danger); }
+
+        /* Table Style */
+        .table-container { margin-top: 25px; overflow-x: auto; background: white; border-radius: 15px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; }
+        th { background: #f1f5f9; padding: 12px; text-align: right; color: #475569; border-bottom: 2px solid var(--border); }
         td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); }
-        tr:nth-child(even) { background: #fcfcfc; }
-        tr.highlight { background: #eef2ff; font-weight: bold; color: var(--primary); }
+        tr.highlight { background: #eff6ff; font-weight: bold; }
+        .txt-red { color: var(--danger); }
+        .txt-blue { color: var(--primary); font-weight: 700; }
 
-        @media (max-width: 850px) {
-            .grid-layout { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .summary-header { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
     <header>
-        <h1>🍯 허니고니 FIRE 계산기</h1>
-        <p style="color: var(--text-sub)">자산 성장과 은퇴 시점을 데이터로 시뮬레이션합니다.</p>
+        <h1>🍯 허니고니 FIRE Pro 시뮬레이터</h1>
     </header>
 
-    <div class="grid-layout">
+    <div class="grid">
         <aside class="card">
-            <div class="input-item">
-                <label>현재 자산 (만원)</label>
-                <input type="number" id="currentAsset" value="5000">
-            </div>
-            <div class="input-item">
-                <label>매월 저축액 (만원)</label>
-                <input type="number" id="monthlyInvest" value="300">
-            </div>
-            <div class="input-item">
-                <label>목표 연 수익률 (%)</label>
-                <input type="number" id="annualReturn" value="8">
-            </div>
-            <div class="input-item">
-                <label>목표 월 생활비 (만원)</label>
-                <input type="number" id="monthlySpend" value="400">
-            </div>
-            <div class="input-item" style="opacity: 0.7;">
-                <label>인플레이션 (연 %)</label>
-                <input type="number" id="inflation" value="2.5">
-            </div>
-            <button onclick="runSimulation()">시뮬레이션 시작</button>
+            <h3 style="margin-top:0; margin-bottom:25px;">📊 현재 자산 및 목표</h3>
+            <div class="input-group"><label>현재 나이</label><input type="number" id="age" value="42"><span class="unit">세</span></div>
+            <div class="input-group"><label>현재 순자산</label><input type="number" id="asset" value="120000"><span class="unit">만원</span></div>
+            <div class="input-group"><label>월 평균 소득</label><input type="number" id="income" value="600"><span class="unit">만원</span></div>
+            <div class="input-group"><label>월 평균 지출액</label><input type="number" id="spend" value="300"><span class="unit">만원</span></div>
+            <div class="input-group"><label>연 물가상승률</label><input type="number" id="inflation" value="2.5" step="0.1"><span class="unit">%</span></div>
+            <div class="input-group"><label>연 투자수익률</label><input type="number" id="return" value="8.0" step="0.1"><span class="unit">%</span></div>
+            <button onclick="simulate()">시뮬레이션 분석 실행</button>
         </aside>
 
-        <main class="result-panel" id="resultPanel">
-            <div class="summary-grid">
-                <div class="summary-card">
-                    <span>은퇴 가능 시점</span>
-                    <strong id="retireTime">-</strong>
-                </div>
-                <div class="summary-card">
-                    <span>목표 자산 (4% 법칙)</span>
-                    <strong id="targetAssetDisplay">-</strong>
-                </div>
+        <main id="resultArea" style="display:none;">
+            <div class="summary-header">
+                <div class="sum-item"><span>자유 달성 나이</span><strong id="resAge">-</strong></div>
+                <div class="sum-item"><span>필요 자산(물가반영)</span><strong id="resTarget">-</strong></div>
+                <div class="sum-item"><span>남은 준비 기간</span><strong id="resPeriod">-</strong></div>
+                <div class="sum-item"><span>자산 소진 예상</span><strong class="danger">100세+</strong></div>
             </div>
 
-            <div class="chart-container">
-                <canvas id="fireChart"></canvas>
+            <div class="card" style="margin-bottom:25px;">
+                <canvas id="mainChart" height="120"></canvas>
             </div>
 
-            <div class="table-wrapper">
-                <table id="assetTable">
+            <div class="table-container">
+                <table>
                     <thead>
                         <tr>
-                            <th style="text-align:center">경과</th>
-                            <th>나이(예상)</th>
+                            <th style="text-align:center">나이</th>
+                            <th>기초 자산</th>
                             <th>연간 저축</th>
-                            <th>운용 수익</th>
-                            <th>총 자산</th>
+                            <th>투자 수익</th>
+                            <th>연간 지출</th>
+                            <th>기말 자산(실질가치)</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -123,115 +140,96 @@
 </div>
 
 <script>
-    let fireChart;
+    let chart;
 
-    function runSimulation() {
-        // 입력값 읽기
-        const currentAsset = parseFloat(document.getElementById('currentAsset').value);
-        const monthlyInvest = parseFloat(document.getElementById('monthlyInvest').value);
-        const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
-        const monthlySpend = parseFloat(document.getElementById('monthlySpend').value);
-        const inflation = parseFloat(document.getElementById('inflation').value) / 100;
+    function simulate() {
+        const startAge = parseInt(document.getElementById('age').value);
+        const startAsset = parseFloat(document.getElementById('asset').value);
+        const monthlyIncome = parseFloat(document.getElementById('income').value);
+        const monthlySpend = parseFloat(document.getElementById('spend').value);
+        const inflationRate = parseFloat(document.getElementById('inflation').value) / 100;
+        const returnRate = parseFloat(document.getElementById('return').value) / 100;
 
-        // 목표 자산 계산 (4% 법칙)
-        const targetAsset = (monthlySpend * 12) / 0.04;
-        
-        let balance = currentAsset;
-        let months = 0;
-        let yearlyData = [];
-        
-        // 시뮬레이션 데이터 생성 (최대 40년)
-        for (let year = 1; year <= 40; year++) {
-            let startBalance = balance;
-            let yearlyInvest = monthlyInvest * 12;
-            let yearlyProfit = 0;
+        let currentAsset = startAsset;
+        let dataPoints = [];
+        let labels = [];
+        let tableHTML = '';
+        let retireAge = 0;
 
-            // 월 복리 계산
-            for (let m = 1; m <= 12; m++) {
-                let profit = balance * (annualReturn / 12);
-                yearlyProfit += profit;
-                balance += profit + monthlyInvest;
-                months++;
+        // 100세까지 연 단위 시뮬레이션
+        for (let age = startAge; age <= 100; age++) {
+            let yearlyIncome = monthlyIncome * 12;
+            // 물가가 반영된 올해의 지출액
+            let yearlySpend = (monthlySpend * 12) * Math.pow(1 + inflationRate, age - startAge);
+            // 해당 지출을 감당하기 위한 목표 자산 (4% 법칙)
+            let targetAsset = (yearlySpend / 0.04); 
+            
+            let profit = currentAsset * returnRate;
+            let savings = (age < 60) ? (yearlyIncome - yearlySpend) : -yearlySpend; // 60세 은퇴 가정
+            
+            let prevAsset = currentAsset;
+            currentAsset += (profit + savings);
+            
+            // 현재 가치(물가 반영)로 환산된 자산
+            let realValue = currentAsset / Math.pow(1 + inflationRate, age - startAge);
+
+            if (!retireAge && currentAsset >= targetAsset) retireAge = age;
+
+            dataPoints.push(Math.round(currentAsset / 10000));
+            labels.push(age + '세');
+
+            // 테이블에는 초기 25년 데이터 표시
+            if (age <= startAge + 25) {
+                tableHTML += `<tr class="${retireAge === age ? 'highlight' : ''}">
+                    <td style="text-align:center">${age}세</td>
+                    <td>${Math.round(prevAsset).toLocaleString()}</td>
+                    <td>${savings > 0 ? Math.round(savings).toLocaleString() : 0}</td>
+                    <td>+${Math.round(profit).toLocaleString()}</td>
+                    <td class="txt-red">-${Math.round(yearlySpend).toLocaleString()}</td>
+                    <td class="txt-blue">${Math.round(realValue).toLocaleString()}</td>
+                </tr>`;
             }
-
-            yearlyData.push({
-                year: year,
-                invest: yearlyInvest,
-                profit: Math.round(yearlyProfit),
-                balance: Math.round(balance),
-                isReached: balance >= targetAsset
-            });
-
-            if (balance > targetAsset * 5) break; // 너무 커지면 중단
         }
 
-        // 결과 UI 업데이트
-        document.getElementById('resultPanel').style.display = 'block';
-        const reachYear = yearlyData.find(d => d.isReached);
-        document.getElementById('retireTime').innerText = reachYear ? `약 ${reachYear.year}년 후` : '40년 내 도달 불가';
-        document.getElementById('targetAssetDisplay').innerText = Math.round(targetAsset / 10000) + "억 원";
+        // UI 결과 업데이트
+        document.getElementById('resultArea').style.display = 'block';
+        document.getElementById('resAge').innerText = (retireAge || "노력 필요") + "세";
+        
+        const finalTargetValue = (monthlySpend * 12 * Math.pow(1 + inflationRate, (retireAge || 100) - startAge) / 0.04);
+        document.getElementById('resTarget').innerText = (finalTargetValue / 10000).toFixed(1) + "억";
+        document.getElementById('resPeriod').innerText = retireAge ? (retireAge - startAge) + "년" : "-";
+        document.getElementById('tableBody').innerHTML = tableHTML;
 
-        updateChart(yearlyData, targetAsset);
-        updateTable(yearlyData, targetAsset);
-    }
-
-    function updateChart(data, target) {
-        const ctx = document.getElementById('fireChart').getContext('2d');
-        if (fireChart) fireChart.destroy();
-
-        fireChart = new Chart(ctx, {
+        // 차트 생성/업데이트
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: data.map(d => d.year + '년'),
-                datasets: [
-                    {
-                        label: '예상 자산',
-                        data: data.map(d => d.balance),
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: '목표선',
-                        data: Array(data.length).fill(target),
-                        borderColor: '#ec4899',
-                        borderDash: [5, 5],
-                        pointRadius: 0,
-                        fill: false
-                    }
-                ]
+                labels: labels,
+                datasets: [{ 
+                    label: '총 자산(억원)', 
+                    data: dataPoints, 
+                    borderColor: '#3b82f6', 
+                    borderWidth: 3,
+                    fill: true, 
+                    backgroundColor: 'rgba(59, 130, 246, 0.05)', 
+                    tension: 0.3,
+                    pointRadius: 2
+                }]
             },
-            options: {
+            options: { 
                 responsive: true,
-                plugins: { legend: { position: 'bottom' } },
+                plugins: { legend: { display: false } },
                 scales: {
-                    y: { beginAtZero: true, ticks: { callback: v => (v/10000).toFixed(1) + '억' } }
+                    y: { beginAtZero: true, ticks: { callback: v => v + '억' } }
                 }
             }
         });
-    }
-
-    function updateTable(data, target) {
-        const body = document.getElementById('tableBody');
-        body.innerHTML = '';
-
-        data.forEach(d => {
-            const tr = document.createElement('tr');
-            if (d.balance >= target && d.year === data.find(x => x.isReached).year) {
-                tr.className = 'highlight';
-            }
-            tr.innerHTML = `
-                <td style="text-align:center">${d.year}년차</td>
-                <td>-</td>
-                <td>${d.invest.toLocaleString()}만</td>
-                <td>+${d.profit.toLocaleString()}만</td>
-                <td>${d.balance.toLocaleString()}만</td>
-            `;
-            body.appendChild(tr);
-        });
+        
+        // 결과 영역으로 스크롤 이동
+        document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
     }
 </script>
-
 </body>
 </html>
